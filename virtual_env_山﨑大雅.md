@@ -458,5 +458,41 @@ DB_USERNAME=root
 DB_PASSWORD=                 # 編集(各自設定しているパスワードを入力) 
 # 省略
 ```
+
+設定を編集後はMySQLの再起動を行います。
+
+
+```shell
+$ sudo systemctl restart mysqld
+```
+
+***
+
+### テーブルの作成
+
+Laravelのログイン認証の実装にあたり使用する、ユーザーが追加されるテーブルの作成を行います。
+
+下記コマンドを順番に実行しましょう。
+
+```shell
+$ sudo systemctl start mysqld #すでにMySQLを起動していた場合は不要です
+$ cd /vagrant/laravel_app_manual
+$ php artisan migrate
+```
+
+以下のようなメッセージが表示されれば成功です。  
+うまくいかない場合は、  
+MySQLが立ち上がっているかどうか？.envファイルの記述が間違っていないか？再確認しましょう。
+
+```
+Migration table created successfully.
+Migrating: 2014_10_12_000000_create_users_table
+Migrated:  2014_10_12_000000_create_users_table
+Migrating: 2014_10_12_100000_create_password_resets_table
+Migrated:  2014_10_12_100000_create_password_resets_table
+Migrating: 2019_08_19_000000_create_failed_jobs_table
+Migrated:  2019_08_19_000000_create_failed_jobs_table
+```
+
 ***
 
