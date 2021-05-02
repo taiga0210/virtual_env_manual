@@ -11,7 +11,7 @@ __OS__
 * CentOS
 ***
 
-## <font color="#006699">導入・条件
+## <font color="#006699">導入・条件</font>
 
 本手順書は「Windows10」をホストOSとする場合の手順書となります。
 
@@ -72,7 +72,7 @@ Successfully added box 'centos/7' (v1902.01) for 'virtualbox'!
 ```
 ***
 
-##  <font color="#006699">Vagrantの作業ディレクトリを用意する
+##  Vagrantの作業ディレクトリを用意する
 
 __Vagrant_test_manual__ という名前のディレクトリを作成します。  
 ※このディレクトリの中に設定等の重要なファイルを格納することとなるので、作成後は移動や削除を行わないようにしてください。
@@ -94,7 +94,7 @@ the comments in the Vagrantfile as well as documentation on
 `vagrantup.com` for more information on using Vagrant.
 ```
 
-## <font color="#006699">Vagrantfileの編集とVagrantの起動
+## Vagrantfileの編集とVagrantの起動
 
 ### Vagrantfileの編集
 
@@ -127,3 +127,33 @@ Vagrantfileがあるディレクトリ（Vagrant_test_manual）にて以下の�
 vagrant up
 ```
 上記のコマンドで起動ができ、`vagrant halt`で停止することが可能です。
+***
+
+## ゲストOSへのログイン
+
+前回の`vagrant up`のコマンドによりゲストOSが起動しました。
+今回はそのゲストOSへ、RLoginを使用しログインしましょう。
+
+### RLoginの設定
+
+RLoginを起動後、ログイン先を選択する画面が開くので、今回起動させたゲストOSを追加するために「新規」ボタンを押下しましょう。
+すると以下画像の画面が表示されますので赤枠の中の値をそれぞれ入力してください。
+
+![RLogin1](RLogin1.png)
+
+「SSH認証鍵」のボタンを押下すると以下の画面が開かれるため  
+`vagrant_test_manual/.vagrant/machines/default/virtualbox` 下の `private_key` を指定して開くボタンを押しましょう。
+
+![RLogin2](RLogin2.png)
+
+以上で設定が完了したので、設定した接続情報を選択して「OK」ボタンでゲストOSにログインしましょう。
+
+※初回ログイン時に注意が表示されますが、OKを押してください。
+
+ログイン後は以下のような文言が表示されるかと思います。
+
+```
+[vagrant@localhost ~]$
+```
+
+これからホストOS・ゲストOSを操作していくにあたり、インストール等を行っていくこととなりますので、自身が操作しているOSがどちらかについて間違いが無いよう注意しましょう。
