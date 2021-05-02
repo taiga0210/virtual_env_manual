@@ -396,3 +396,67 @@ $ sudo systemctl start nginx
 
 これでNginxのwelcomeページが表示されているはずです。画面を確認してみてください。
 ***
+
+## Laravelのセットアップ
+
+### 事前準備
+Laravelのインストールに向けての事前準備として「**Node.js**」をインストールします。  
+下記コマンドを実行しましょう。
+
+```shell
+$ sudo yum -y install epel-release
+$ sudo yum -y install nodejs npm
+```
+
+インストール完了後下記コマンドでバージョンが確認できたら問題なくインストールが完了しています。
+
+```shell
+$ node -v
+$ npm -v
+```
+***
+
+### Laravelのインストール
+
+事前準備が完了したらLaravelプロジェクトを作成しましょう。  
+今回プロジェクトを作成するディレクトリへ下記コマンドを実行し移動します。
+```shell
+$ cd /vagrant
+```
+
+今回のプロジェクト名は`laravel_app_manual`というプロジェクトにするので、下記コマンドを実行し作成してください。
+
+```shell
+$ composer create-project laravel/laravel --prefer-dist laravel_app_manual 6.0
+```
+***
+
+### DBへの接続を設定する
+
+MySQLのインストール時に設定したデータベース名やパスワードを **.env** ファイルへ書き込みます。  
+そうすることで作成したLaravelプロジェクトで、作成していたデータベースが使用できるようになります。
+
+```shell
+$ vi /vagrant/laravel_app_manual/.env
+```
+
+上記コマンドを実行し下記内容を編集します。
+
+```shell
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=base64:Rs6WHziGChaNJGg0o1mBOidiKaFZPkKeHNt6aGamvYk=
+APP_DEBUG=true
+APP_LOG_LEVEL=debug
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel_app      # 編集
+DB_USERNAME=root
+DB_PASSWORD=                 # 編集(各自設定しているパスワードを入力) 
+# 省略
+```
+***
+
