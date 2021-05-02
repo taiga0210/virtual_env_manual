@@ -15,8 +15,9 @@ __OS__
 本手順書は開始が「Vagrantディレクトリの作成」となっているので、  
 * VirtualBox ver6.0.14のインストール  
 * Vagrantの最新バージョンのインストール（2021/5/2時点では2.2.15）  
-* vagrant boxのダウンロード（Linux/CentOS/バージョン7）
+* vagrant boxのダウンロード（Linux/CentOS/バージョン7）  
 は完了している状態からの手順となります。
+
 
 また、ゲストOSの操作環境は[RLogin](http://nanno.dip.jp/softlib/man/rlogin/#INSTALL)を使用しています。
 
