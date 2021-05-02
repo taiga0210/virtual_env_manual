@@ -496,3 +496,98 @@ Migrated:  2019_08_19_000000_create_failed_jobs_table
 
 ***
 
+## Nginxの設定変更後のLaravelの表示
+
+Laravelのインストールも完了したので、実際に画面にLaravelを表示させてみましょう。
+
+### Nginxの設定ファイルの編集
+このままでは作成したLaravelを表示させるための記述がされていないので、`.conf`ファイルを編集しましょう。
+
+使用しているOSがCentOSの場合、`/etc/nginx/conf.d` ディレクトリ下の `default.conf` ファイルが設定ファイルとなります。
+
+```shell
+$ sudo vi /etc/nginx/conf.d/default.conf
+```
+
+下記の内容を編集します。それぞれ確認し間違えのないようにしましょう。
+
+```nginx
+server {
+  listen       80;
+  server_name  192.168.33.19; # 編集（今回使用しているIPアドレスを入力します）
+  # ApacheのDocumentRootにあたります
+  root /vagrant/laravel_app_manual/public; # 追記
+  index  index.html index.htm index.php; # 追記
+
+  #charset koi8-r;
+  #access_log  /var/log/nginx/host.access.log  main;
+
+  location / {
+      #root   /usr/share/nginx/html; # コメントアウト
+      #index  index.html index.htm;  # コメントアウト
+      try_files $uri $uri/ /index.php$is_args$args;  # 追記
+  }
+
+  # 省略
+
+  # 該当箇所のコメントを解除し、必要な箇所には変更を加える
+  # 下記は root を除いたlocation { } までのコメントが解除されていることを確認してください。
+
+  location ~ \.php$ {
+  #    root           html;
+      fastcgi_pass   127.0.0.1:9000;
+      fastcgi_index  index.php;
+      fastcgi_param  SCRIPT_FILENAME  /$document_root/$fastcgi_script_name;  # $fastcgi_script_name以前を /$document_root/に変更
+      include        fastcgi_params;
+  }
+
+  # 省略
+```
+
+Nginxの設定ファイルの変更は、以上です。  
+次に **php-fpm** の設定ファイルを編集していきます。
+
+```shell
+$ sudo vi /etc/php-fpm.d/www.conf
+```
+
+変更箇所は以下になります。
+
+```plain
+;24行目近辺
+user = apache
+# ↓ 以下に編集
+user = nginx
+
+group = apache
+# ↓ 以下に編集
+group = nginx
+```
+
+設定ファイルの変更に関しては、以上となります。  
+では早速起動しましょう(Nginxは再起動になります)。
+
+```shell
+$ sudo systemctl restart nginx
+$ sudo systemctl start php-fpm
+```
+
+ホストOSにて **[http://192.168.33.10](http://192.168.33.10/)** へアクセスしてみましょう。Laravelの画面が表示されたかと思います。
+
+画面は表示されますが、以下のようなLaravelのエラーが表示されると思います。
+
+```shell
+The stream or file "/vagrant/laravel_app/storage/logs/laravel.log" could not be opened: failed to open stream: Permission denied
+```
+
+これは 先程php-fpmの設定ファイルの user と group を  `nginx`  に変更したと思いますが、ファイルとディレクトリの実行 user と group に  `nginx`  が許可されていないため起きているエラーです。
+
+そのため、以下のコマンドを実行して  `nginx`  というユーザーでもログファイルへの書き込みができる権限を付与してあげましょう。
+
+```shell
+$ cd /vagrant/laravel_app
+$ sudo chmod -R 777 storage
+```
+
+***
+
