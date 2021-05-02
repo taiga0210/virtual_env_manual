@@ -1,28 +1,78 @@
 # 環境構築手順書
+
 ***
 __使用するソフトウェア__  
 * PHP 7.3  
-* Nginx  
-* MySQL 5.7  
-* Laravel 6.0
+*  Nginx  
+* MySQL 5.7
+* Laravel 6.0  
 
-__OS__  
-* CentOS  
+__OS__
+* CentOS
 ***
 
-## 導入・条件
+## <font color="#006699">導入・条件
 
-本手順書の開始は「Vagrantディレクトリの作成」となっているので、
+本手順書は「Windows10」をホストOSとする場合の手順書となります。
 
-* VirtualBox ver6.0.14のインストール  
-* Vagrantの最新バージョンのインストール（2021/5/2時点では2.2.15）  
-* vagrant boxのダウンロード（Linux/CentOS/バージョン7）
+### VirtualBoxのインストール
 
-は完了している状態からの手順となります。
+__※今回使用するVagrantの最新バージョンがVirtualBoxの最新バージョンに対応していないため、VirtualBoxはver6.0.14をインストールします。__
 
-また、ゲストOSの操作環境は[RLogin](http://nanno.dip.jp/softlib/man/rlogin/#INSTALL)を使用しています。
+下記サイトにて「ver6.0.14」の「Windows hosts」を選択しダウンロードしてください。
 
-##  Vagrantの作業ディレクトリを用意する
+[Virtual Box公式](https://www.virtualbox.org/wiki/Download_Old_Builds_6_0)
+
+ダウンロード後にデスクトップ画面に「Oracle VM VirtualBox」のアイコンがあればインストール完了しています。
+***
+
+### Vagrantインストール
+
+下記サイトからインストールします。
+
+[Vagrant公式](https://www.vagrantup.com/)
+
+インストール後に下記コマンドを実行し問題なくインストールができているかの確認を行います。
+
+```
+vagrant -v
+```
+バージョンの確認できたらインストール完了です。
+***
+
+### RLoginのインストール
+
+WindowsのコマンドプロンプトにはSSHコマンドが使用できないため、ターミナルソフトを導入しゲストOSの操作を行うようにします。  
+下記サイトよりインストールしましょう。
+
+[RLogin](http://nanno.dip.jp/softlib/man/rlogin/#INSTALL)
+***
+
+### Vagrantダウンロード
+
+仮想環境を構築する際の元になるOSを決めていきます。  
+今回はVagrantを導入していますので下記の流れを進め __LinuxのCentOSのバージョン7__ を使用できるよう指定しましょう。
+
+```
+vagrant box add centos/7
+# 上記実行後下記の選択肢が表示される
+1) hyperv
+2) libvirt
+3) virtualbox
+4) vmware_desktop
+
+Enter your choice: 3
+```
+
+今回使用するソフトは __VirtualBox__ のため、 __3__ を入力しEnterを押しましょう。  
+下記のように表示されたら完了です。
+
+```
+Successfully added box 'centos/7' (v1902.01) for 'virtualbox'!
+```
+***
+
+##  <font color="#006699">Vagrantの作業ディレクトリを用意する
 
 __Vagrant_test_manual__ という名前のディレクトリを作成します。  
 ※このディレクトリの中に設定等の重要なファイルを格納することとなるので、作成後は移動や削除を行わないようにしてください。
@@ -44,7 +94,7 @@ the comments in the Vagrantfile as well as documentation on
 `vagrantup.com` for more information on using Vagrant.
 ```
 
-## Vagrantfileの編集とVagrantの起動
+## <font color="#006699">Vagrantfileの編集とVagrantの起動
 
 ### Vagrantfileの編集
 
@@ -76,5 +126,4 @@ Vagrantfileがあるディレクトリ（Vagrant_test_manual）にて以下の�
 ```
 vagrant up
 ```
-上記のコマンドで起動ができ、```vagrant halt```で停止することが可能です。
-
+上記のコマンドで起動ができ、`vagrant halt`で停止することが可能です。
