@@ -11,7 +11,7 @@ __OS__
 * CentOS
 ***
 
-## <font color="#006699">導入・条件</font>
+## 導入・条件
 
 本手順書は「Windows10」をホストOSとする場合の手順書となります。
 
@@ -100,6 +100,9 @@ the comments in the Vagrantfile as well as documentation on
 
 作成した __vagrant_test_manual__ ファイル直下にある「Vagrantfile」を編集します。
 今回編集を行うのは3点です。
+
+※テキストエディタで開き編集してください。
+
 ```Vagrantfile
 # 変更点①
 config.vm.network "forwarded_port", guest: 80, host: 8080
@@ -163,9 +166,10 @@ RLoginを起動後、ログイン先を選択する画面が開くので、今�
 グループパッケージをインストールし、gitなどの開発に必要なパッケージを一括でインストールしましょう。  
 下記コマンドを実行してください。
 
+```shell
+$ sudo yum -y groupinstall "development tools"
 ```
-sudo yum -y groupinstall "development tools"
-```
+***
 
 ## PHPのインストール
 
@@ -173,11 +177,11 @@ sudo yum -y groupinstall "development tools"
 PHP7.3をダウンロードするため、下記コマンドを順番に実行していきましょう。
 
 ```shell
-sudo yum -y install epel-release wget
-sudo wget http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
-sudo rpm -Uvh remi-release-7.rpm
-sudo yum -y install --enablerepo=remi-php73 php php-pdo php-mysqlnd php-mbstring php-xml php-fpm php-common php-devel php-mysql unzip
-php -v
+$ sudo yum -y install epel-release wget
+$ sudo wget http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+$ sudo rpm -Uvh remi-release-7.rpm
+$ sudo yum -y install --enablerepo=remi-php73 php php-pdo php-mysqlnd php-mbstring $ php-xml php-fpm php-common php-devel php-mysql unzip
+$ php -v
 ```
 
 上記の5つのコマンドを実行しPHPのバージョンが確認できたらPHPのインストールは完了です。
@@ -188,17 +192,18 @@ php -v
 PHP管理パッケージであるcomposerをインストールします。  
 下記コマンドを順番に実行してください。
 
-```
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
+```shell
+$ php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+$ php composer-setup.php
+$ php -r "unlink('composer-setup.php');"
 
 # どのディレクトリにいてもcomposerコマンドを使用できるようfileの移動を行います
-sudo mv composer.phar /usr/local/bin/composer
-composer -v
+$ sudo mv composer.phar /usr/local/bin/composer
+$ composer -v
 ```
 
 最後のバージョン確認コマンドにより、composerのバージョンが確認できたらインストール完了です。
+***
 
 ## データベースのインストール
 
@@ -210,18 +215,18 @@ centos7は、デフォルトでmariaDBというデータベースがインスト
 
 下記コマンドを順番に実行しましょう。
 
-```
-sudo wget https://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
-sudo rpm -Uvh mysql57-community-release-el7-7.noarch.rpm
-sudo yum install -y mysql-community-server
-mysql --version
+```shell
+$ sudo wget https://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
+$ sudo rpm -Uvh mysql57-community-release-el7-7.noarch.rpm
+$ sudo yum install -y mysql-community-server
+$ mysql --version
 ```
 
 バージョンの確認ができたらインストール完了です。
 次にMySQLを起動し接続を行います。下記コマンドを実行しましょう。
 
-```
-sudo systemctl start mysqld
+```shell
+$ sudo systemctl start mysqld
 ```
 
 これでMySQLに接続が可能となりました。
@@ -234,12 +239,14 @@ sudo systemctl start mysqld
 ※ 今回は、比較的簡単な方法でパスワードの再設定を行いますが、セキュリティ的によろしくはないため本番環境と呼ばれる環境でこの方法で再設定するのは避けてください。
 
 下記コマンドを実行しましょう。
+
+```shell
+$ sudo cat /var/log/mysqld.log | grep 'temporary password'
 ```
-sudo cat /var/log/mysqld.log | grep 'temporary password'
-```
+
 実行後下記のような表示がされ、`hogehoge`と表示されている場所に記載されている文字列が現在のパスワードとなります。
 
-```
+```shell
 2017-01-01T00:00:00.000000Z 1 [Note] A temporary password is generated for root@localhost: hogehoge
 ```
 
@@ -254,17 +261,21 @@ sudo cat /var/log/mysqld.log | grep 'temporary password'
 `/var/log/mysqld.log`  というファイルを出力した結果を右辺に渡し、右辺ではその結果から  `temporaray password`  という文字列を持つ行のみを出力しました。
 ***
 先ほど出力した文字列のパスワードをコピー後、以下のコマンドを実行し、パスワード入力時にペーストしてください。
+
 ```
-mysql -u root -p
+$ mysql -u root -p
 Enter password:
 mysql >
 ```
+
 問題なく接続ができたらパスワードの再設定を行います。下記のコマンドを実行しましょう。
-```
+
+```mysql
 mysql > set password = "新たなpassword";
 ```
 
 これでMySQLのログイン及びパスワードの再設定が完了しました。
+***
 
 ## データベースの作成
 
@@ -275,4 +286,113 @@ mysql > create database laravel_app_manual;
 ```
 
 Query OKと表示されたら作成は完了となります。
+***
 
+## Nginxのインストールとブラウザ確認
+
+### Nginxのインストール
+
+今回の使用するWebサーバをインストールしていきます。
+viエディタを使用し以下のファイルを作成します。
+
+```shell
+$ sudo vi /etc/yum.repos.d/nginx.repo
+```
+
+書き込む内容は以下になります。
+
+```
+[nginx]
+name=nginx repo
+baseurl=https://nginx.org/packages/mainline/centos/\$releasever/\$basearch/
+gpgcheck=0
+enabled=1
+```
+
+書き終えたら保存して、以下のコマンドを実行しNginxのインストールを実行します。
+
+```shell
+$ sudo yum install -y nginx
+$ nginx -v
+```
+
+上記のコマンドでNginxのバージョンが確認できたら、起動をしましょう。
+下記コマンドを実行してください。
+
+```shell
+$ sudo systemctl start nginx
+```
+
+これでNginxのインストールと起動が完了しましたが、ホストOSのブラウザにて  _[http://192.168.33.19](http://192.168.33.19/)_  と入力してもNginxのWelcomeページは表示されないかと思います。
+表示をさせるために「**ファイヤーウォール**」の設定をしていきましょう。
+***
+
+### ファイヤーウォールの設定
+
+ブラウザに表示させるため、ファイヤーウォールの設定にて80ポートを経由したhttp通信によるアクセスを許可するためのコマンドを実行します。
+
+```shell
+# ファイヤーウォールの起動
+$ sudo systemctl start firewalld.service
+$ sudo firewall-cmd --add-service=http --zone=public --permanent
+
+# 新たに追加を行ったのでそれをファイヤーウォールに反映させるコマンドも合わせて実行します
+$ sudo firewall-cmd --reload
+```
+では、一旦この状態で画面を確認してみます。
+
+もしまだ表示できないようであれば、一度以下のコマンドを実行してください。
+
+```shell
+$ sudo systemctl restart nginx
+```
+
+Nginxのwelcome画面が表示されたでしょうか？
+***
+
+### それでも表示されなかった場合
+
+Nginxのwelcomeページが表示されず、  **Forbidden 403**  というエラーが出た場合の対処法を以下に記載します。  
+
+viエディタを使用してSELinuxの設定を変更します。  
+「SELinux コンテキスト」の不一致によりエラーが出ているので、SELinuxを無効化します。(今回はローカル環境なので無効にしてしまっても問題ありませんが、本番環境構築のときは別のアプローチが必要です。)
+
+```shell
+$ sudo vi /etc/selinux/config
+```
+
+viエディタが開き設定ファイルが表示されるので下記の部分を探してください。
+
+```shell
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+# enforcing - SELinux security policy is enforced.
+# permissive - SELinux prints warnings instead of enforcing.
+# disabled - No SELinux policy is loaded.
+SELINUX=enforcing
+```
+
+上記の最終行の記述を下記のように書き換えて、保存してください。
+
+`SELINUX=disabled`
+
+設定を反映させるためにゲストOSを再起動する必要があるので、ゲストOSをから一度ログアウトして下記コマンドを実行してください。
+
+```
+$ exit
+```
+```
+vagrant reload　#ホストOSでの操作
+```
+
+リロードが完了したら再度ゲストOSにログインしましょう。
+RLoginを再度起動しログインしましょう。
+
+再度Nginxを起動します。
+
+```
+$ sudo systemctl start nginx
+```
+
+これでNginxのwelcomeページが表示されているはずです。画面を確認してみてください。
+***
