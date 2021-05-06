@@ -693,3 +693,19 @@ npm run dev
 実際に _[http://192.168.33.19](http://192.168.33.19/)_ を開き確認しましょう。「**REGISTER**」よりログイン画面へ遷移しユーザーを作成出来たら環境構築及びLaravelの実装が完了しました。
 
 ***
+
+## 参考サイト
+
+「Giztech」[https://giztech.gizumo-inc.work/](https://giztech.gizumo-inc.work/)
+
+「Virtual公式」[https://www.virtualbox.org/wiki/Download_Old_Builds_6_0](https://www.virtualbox.org/wiki/Download_Old_Builds_6_0)
+
+「Vagrant公式」[https://www.vagrantup.com/](https://www.vagrantup.com/)
+
+「【Node.js入門】各OS別のインストール方法まとめ(Windows,Mac,Linux…)」[SAMURAI ENGINEER](https://www.sejuku.net/blog/72545)
+
+「laravel(v6)にvueを導入する(JS&CSSスカフォールド)」[codelikeなブログ](https://codelikes.com/laravel-version6-scaffolding-vue/)
+
+「npm インストールでエラーがでます」[tetatail](https://teratail.com/questions/241819)
+
+***
