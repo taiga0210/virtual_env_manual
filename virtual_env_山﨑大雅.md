@@ -453,7 +453,7 @@ APP_URL=http://localhost
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=laravel_app      # 編集
+DB_DATABASE=laravel_app_manual      # 編集
 DB_USERNAME=root
 DB_PASSWORD=                 # 編集(各自設定しているパスワードを入力) 
 # 省略
@@ -572,7 +572,7 @@ $ sudo systemctl restart nginx
 $ sudo systemctl start php-fpm
 ```
 
-ホストOSにて **[http://192.168.33.10](http://192.168.33.10/)** へアクセスしてみましょう。Laravelの画面が表示されたかと思います。
+ホストOSにて **[http://192.168.33.19](http://192.168.33.19/)** へアクセスしてみましょう。Laravelの画面が表示されたかと思います。
 
 画面は表示されますが、以下のようなLaravelのエラーが表示されると思います。
 
@@ -585,9 +585,56 @@ The stream or file "/vagrant/laravel_app/storage/logs/laravel.log" could not be 
 そのため、以下のコマンドを実行して  `nginx`  というユーザーでもログファイルへの書き込みができる権限を付与してあげましょう。
 
 ```shell
-$ cd /vagrant/laravel_app
+$ cd /vagrant/laravel_app_manual
 $ sudo chmod -R 777 storage
 ```
 
 ***
 
+## ログイン機能の実装
+
+最後に、ログイン機能の実装を行います。  
+今回使用しているLaravelのバージョンは**6.0**になるため、**5.8**までの実装方法の`php artisan make:auth`のコマンドとは異なります。
+
+Laravelの6.x、7.xは**Laravel/ui**のパッケージ、8.xは**Jetstream**のパッケージで別での管理となってしまったためパッケージをインストールする必要があります。
+
+使用しているのは6.0のため下記コマンドを実行しパッケージをインストールしましょう。  
+
+```shell
+$ cd /vagrant/laravel_app_manual
+$ composer require laravel/ui:^1.0 --dev
+```
+
+これでuiコマンドが使用できるようになりましたので、下記コマンドを実行しログイン機能の実装をしてください。
+
+```shell
+$ php artisan ui vue --auth
+```
+コマンド実行後下記の文言が表示されたら問題なく完了しています。
+
+```shell
+Vue scaffolding installed successfully.
+Please run "npm install && npm run dev" to compile your fresh scaffolding.
+Authentication scaffolding generated successfully.
+```
+
+しかしこのままではJSとCSSが読み込めず、ログイン認証画面のレイアウトが崩れてしまっています。  
+上記の表示にあるように、下記コマンドを**ホストOS**で 実行し必要なパッケージをインストールしましょう。
+
+```shell
+cd laravel_app_manualまでの絶対パス
+npm install
+npm uninstall --save-dev sass-loader
+npm install --save-dev sass-loader@7.1.0
+```
+
+上記実行後、下記コマンドを**ゲストOS**で実行しましょう。
+
+```shell
+npm run dev
+```
+
+これでログイン機能の実装が完了しました。  
+実際に _[http://192.168.33.19](http://192.168.33.19/)_ を開き確認しましょう。「**REGISTER**」よりログイン画面へ遷移しユーザーを作成出来たら環境構築及びLaravelの実装が完了しました。
+
+***
